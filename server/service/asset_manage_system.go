@@ -1,0 +1,113 @@
+package service
+
+import (
+	"gin-vue-admin/global"
+	"gin-vue-admin/model"
+	"gin-vue-admin/model/request"
+)
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: CreateAsset_manage_system
+//@description: 创建Asset_manage_system记录
+//@param: asset_manage_system model.Asset_manage_system
+//@return: err error
+
+func CreateAsset_manage_system(asset_manage_system model.Asset_manage_system) (err error) {
+	err = global.GVA_DB.Create(&asset_manage_system).Error
+	return err
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: DeleteAsset_manage_system
+//@description: 删除Asset_manage_system记录
+//@param: asset_manage_system model.Asset_manage_system
+//@return: err error
+
+func DeleteAsset_manage_system(asset_manage_system model.Asset_manage_system) (err error) {
+	err = global.GVA_DB.Delete(&asset_manage_system).Error
+	return err
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: DeleteAsset_manage_systemByIds
+//@description: 批量删除Asset_manage_system记录
+//@param: ids request.IdsReq
+//@return: err error
+
+func DeleteAsset_manage_systemByIds(ids request.IdsReq) (err error) {
+	err = global.GVA_DB.Delete(&[]model.Asset_manage_system{},"id in ?",ids.Ids).Error
+	return err
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: UpdateAsset_manage_system
+//@description: 更新Asset_manage_system记录
+//@param: asset_manage_system *model.Asset_manage_system
+//@return: err error
+
+func UpdateAsset_manage_system(asset_manage_system model.Asset_manage_system) (err error) {
+	err = global.GVA_DB.Save(&asset_manage_system).Error
+	return err
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: GetAsset_manage_system
+//@description: 根据id获取Asset_manage_system记录
+//@param: id uint
+//@return: err error, asset_manage_system model.Asset_manage_system
+
+func GetAsset_manage_system(id uint) (err error, asset_manage_system model.Asset_manage_system) {
+	err = global.GVA_DB.Where("id = ?", id).First(&asset_manage_system).Error
+	return
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: GetAsset_manage_systemInfoList
+//@description: 分页获取Asset_manage_system记录
+//@param: info request.Asset_manage_systemSearch
+//@return: err error, list interface{}, total int64
+
+func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+    // 创建db
+	db := global.GVA_DB.Model(&model.Asset_manage_system{})
+    var asset_manage_systems []model.Asset_manage_system
+    // 如果有条件搜索 下方会自动创建搜索语句
+    if info.Asset_system_name != "" {
+        db = db.Where("`asset_system_name` LIKE ?","%"+ info.Asset_system_name+"%")
+    }
+    if info.Asset_system_manager != "" {
+        db = db.Where("`asset_system_manager` = ?",info.Asset_system_manager)
+    }
+    if info.Asset_system_domain != "" {
+        db = db.Where("`asset_system_domain` = ?",info.Asset_system_domain)
+    }
+    if info.Extranet_ip != "" {
+        db = db.Where("`extranet_ip` = ?",info.Extranet_ip)
+    }
+    if info.Extranet_port != 0 {
+        db = db.Where("`extranet_port` = ?",info.Extranet_port)
+    }
+    if info.Intranet_ip != "" {
+        db = db.Where("`intranet_ip` = ?",info.Intranet_ip)
+    }
+    if info.Intranet_port != 0 {
+        db = db.Where("`intranet_port` = ?",info.Intranet_port)
+    }
+    if info.Is_test_environment != nil {
+        db = db.Where("`is_test_environment` = ?",info.Is_test_environment)
+    }
+    if info.Web_status_code != 0 {
+        db = db.Where("`web_status_code` = ?",info.Web_status_code)
+    }
+    if info.Is_important_asset != nil {
+        db = db.Where("`is_important_asset` = ?",info.Is_important_asset)
+    }
+    if info.More_record != "" {
+        db = db.Where("`more_record` LIKE ?","%"+ info.More_record+"%")
+    }
+	err = db.Count(&total).Error
+	err = db.Limit(limit).Offset(offset).Find(&asset_manage_systems).Error
+	return err, asset_manage_systems, total
+}
