@@ -7,7 +7,6 @@ type Asset_manage_systemSearch struct{
     PageInfo
 }
 type Asset_manage_systemExport struct {
-    IdsReq IdsReq
-    infolist []model.Asset_manage_system
+    Infolist []model.Asset_manage_system
     Filename string
 }

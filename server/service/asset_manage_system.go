@@ -115,5 +115,6 @@ func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err
 }
 
 func ExportAsset_manage_system_resultsByIds(asset_manage_systemExport request.Asset_manage_systemExport)(err error){
+
 	return nil
 }
