@@ -84,16 +84,16 @@ func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err
         db = db.Where("`asset_system_domain` = ?",info.Asset_system_domain)
     }
     if info.Extranet_ip != "" {
-        db = db.Where("`extranet_ip` = ?",info.Extranet_ip)
+        db = db.Where("`extranet_ip` LIKE ?","%"+info.Extranet_ip+"%")
     }
     if info.Extranet_port != "" {
-        db = db.Where("`extranet_port` = ?",info.Extranet_port)
+        db = db.Where("`extranet_port` LIKE ?","%"+info.Extranet_port+"%")
     }
     if info.Intranet_ip != "" {
-        db = db.Where("`intranet_ip` = ?",info.Intranet_ip)
+        db = db.Where("`intranet_ip` LIKE ?","%"+info.Intranet_ip+"%")
     }
     if info.Intranet_port != "" {
-        db = db.Where("`intranet_port` = ?",info.Intranet_port)
+        db = db.Where("`intranet_port` LIKE ?","%"+info.Intranet_port+"%")
     }
     if info.Is_test_environment != nil {
         db = db.Where("`is_test_environment` = ?",info.Is_test_environment)
