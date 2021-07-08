@@ -86,13 +86,13 @@ func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err
     if info.Extranet_ip != "" {
         db = db.Where("`extranet_ip` = ?",info.Extranet_ip)
     }
-    if info.Extranet_port != 0 {
+    if info.Extranet_port != "" {
         db = db.Where("`extranet_port` = ?",info.Extranet_port)
     }
     if info.Intranet_ip != "" {
         db = db.Where("`intranet_ip` = ?",info.Intranet_ip)
     }
-    if info.Intranet_port != 0 {
+    if info.Intranet_port != "" {
         db = db.Where("`intranet_port` = ?",info.Intranet_port)
     }
     if info.Is_test_environment != nil {

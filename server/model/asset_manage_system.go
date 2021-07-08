@@ -12,9 +12,9 @@ type Asset_manage_system struct {
       Asset_system_manager  string `json:"asset_system_manager" form:"asset_system_manager" gorm:"column:asset_system_manager;comment:"`
       Asset_system_domain  string `json:"asset_system_domain" form:"asset_system_domain" gorm:"column:asset_system_domain;comment:"`
       Extranet_ip  string `json:"extranet_ip" form:"extranet_ip" gorm:"column:extranet_ip;comment:"`
-      Extranet_port  int `json:"extranet_port" form:"extranet_port" gorm:"column:extranet_port;comment:"`
+      Extranet_port  string `json:"extranet_port" form:"extranet_port" gorm:"column:extranet_port;comment:"`
       Intranet_ip  string `json:"intranet_ip" form:"intranet_ip" gorm:"column:intranet_ip;comment:"`
-      Intranet_port  int `json:"intranet_port" form:"intranet_port" gorm:"column:intranet_port;comment:"`
+      Intranet_port  string `json:"intranet_port" form:"intranet_port" gorm:"column:intranet_port;comment:"`
       Is_test_environment  *bool `json:"is_test_environment" form:"is_test_environment" gorm:"column:is_test_environment;comment:"`
       Web_status_code  int `json:"web_status_code" form:"web_status_code" gorm:"column:web_status_code;comment:"`
       Web_screenshot  string `json:"web_screenshot" form:"web_screenshot" gorm:"column:web_screenshot;comment:"`
