@@ -128,3 +128,14 @@ func GetAsset_manage_systemList(c *gin.Context) {
         }, "获取成功", c)
     }
 }
+
+func ExportAsset_manage_system_resultsByIds(c *gin.Context){
+	var asset_manage_systemExport request.Asset_manage_systemExport
+	_ = c.ShouldBindJSON(&asset_manage_systemExport)
+	if err := service.ExportAsset_manage_system_resultsByIds(asset_manage_systemExport); err != nil {
+		global.GVA_LOG.Error("选中导出失败!", zap.Any("err", err))
+		response.FailWithMessage("选中导出失败", c)
+	} else {
+		response.OkWithMessage("选中导出成功", c)
+	}
+}

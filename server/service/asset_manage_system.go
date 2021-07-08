@@ -39,6 +39,8 @@ func DeleteAsset_manage_systemByIds(ids request.IdsReq) (err error) {
 	return err
 }
 
+
+
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: UpdateAsset_manage_system
 //@description: 更新Asset_manage_system记录
@@ -110,4 +112,8 @@ func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err
 	err = db.Count(&total).Error
 	err = db.Limit(limit).Offset(offset).Find(&asset_manage_systems).Error
 	return err, asset_manage_systems, total
+}
+
+func ExportAsset_manage_system_resultsByIds(asset_manage_systemExport request.Asset_manage_systemExport)(err error){
+	return nil
 }

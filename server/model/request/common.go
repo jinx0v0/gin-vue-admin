@@ -20,4 +20,5 @@ type GetAuthorityId struct {
 	AuthorityId string // 角色ID
 }
 
+
 type Empty struct{}
