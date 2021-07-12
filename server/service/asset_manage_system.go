@@ -1,9 +1,12 @@
 package service
 
 import (
+	"fmt"
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"reflect"
 )
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -35,11 +38,9 @@ func DeleteAsset_manage_system(asset_manage_system model.Asset_manage_system) (e
 //@return: err error
 
 func DeleteAsset_manage_systemByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]model.Asset_manage_system{},"id in ?",ids.Ids).Error
+	err = global.GVA_DB.Delete(&[]model.Asset_manage_system{}, "id in ?", ids.Ids).Error
 	return err
 }
-
-
 
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: UpdateAsset_manage_system
@@ -72,49 +73,93 @@ func GetAsset_manage_system(id uint) (err error, asset_manage_system model.Asset
 func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
-    // 创建db
+	// 创建db
 	db := global.GVA_DB.Model(&model.Asset_manage_system{})
-    var asset_manage_systems []model.Asset_manage_system
-    // 如果有条件搜索 下方会自动创建搜索语句
-    if info.Asset_system_name != "" {
-        db = db.Where("`asset_system_name` LIKE ?","%"+ info.Asset_system_name+"%")
-    }
-    if info.Asset_system_manager != "" {
-        db = db.Where("`asset_system_manager` = ?",info.Asset_system_manager)
-    }
-    if info.Asset_system_domain != "" {
-        db = db.Where("`asset_system_domain` = ?",info.Asset_system_domain)
-    }
-    if info.Extranet_ip != "" {
-        db = db.Where("`extranet_ip` LIKE ?","%"+info.Extranet_ip+"%")
-    }
-    if info.Extranet_port != "" {
-        db = db.Where("`extranet_port` LIKE ?","%"+info.Extranet_port+"%")
-    }
-    if info.Intranet_ip != "" {
-        db = db.Where("`intranet_ip` LIKE ?","%"+info.Intranet_ip+"%")
-    }
-    if info.Intranet_port != "" {
-        db = db.Where("`intranet_port` LIKE ?","%"+info.Intranet_port+"%")
-    }
-    if info.Is_test_environment != nil {
-        db = db.Where("`is_test_environment` = ?",info.Is_test_environment)
-    }
-    if info.Web_status_code != 0 {
-        db = db.Where("`web_status_code` = ?",info.Web_status_code)
-    }
-    if info.Is_important_asset != nil {
-        db = db.Where("`is_important_asset` = ?",info.Is_important_asset)
-    }
-    if info.More_record != "" {
-        db = db.Where("`more_record` LIKE ?","%"+ info.More_record+"%")
-    }
+	var asset_manage_systems []model.Asset_manage_system
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.Asset_system_name != "" {
+		db = db.Where("`asset_system_name` LIKE ?", "%"+info.Asset_system_name+"%")
+	}
+	if info.Asset_system_manager != "" {
+		db = db.Where("`asset_system_manager` = ?", info.Asset_system_manager)
+	}
+	if info.Asset_system_domain != "" {
+		db = db.Where("`asset_system_domain` = ?", info.Asset_system_domain)
+	}
+	if info.Extranet_ip != "" {
+		db = db.Where("`extranet_ip` LIKE ?", "%"+info.Extranet_ip+"%")
+	}
+	if info.Extranet_port != "" {
+		db = db.Where("`extranet_port` LIKE ?", "%"+info.Extranet_port+"%")
+	}
+	if info.Intranet_ip != "" {
+		db = db.Where("`intranet_ip` LIKE ?", "%"+info.Intranet_ip+"%")
+	}
+	if info.Intranet_port != "" {
+		db = db.Where("`intranet_port` LIKE ?", "%"+info.Intranet_port+"%")
+	}
+	if info.Is_test_environment != nil {
+		db = db.Where("`is_test_environment` = ?", info.Is_test_environment)
+	}
+	if info.Web_status_code != 0 {
+		db = db.Where("`web_status_code` = ?", info.Web_status_code)
+	}
+	if info.Is_important_asset != nil {
+		db = db.Where("`is_important_asset` = ?", info.Is_important_asset)
+	}
+	if info.More_record != "" {
+		db = db.Where("`more_record` LIKE ?", "%"+info.More_record+"%")
+	}
 	err = db.Count(&total).Error
 	err = db.Limit(limit).Offset(offset).Find(&asset_manage_systems).Error
 	return err, asset_manage_systems, total
 }
 
-func ExportAsset_manage_system_resultsByIds(asset_manage_systemExport request.Asset_manage_systemExport)(err error){
+func ExportAsset_manage_system_resultsByIds(iterms []model.Asset_manage_system, filePath string) error {
+	var Is_important_asset string
+	var Is_test_environment string
+	excel := excelize.NewFile()
+	excel.SetSheetRow("Sheet1", "A1", &[]string{"序号", "系统名称", "产品经理（负责人）", "域名", "重点资产", "外网ip", "外网端口", "内网ip", "内网端口", "测试环境", "web状态码", "备注", "时间"})
+	for i, menu := range iterms {
+		//处理tinyint导出问题
+		if reflect.ValueOf(menu.Is_important_asset).IsNil(){
+			Is_important_asset = "未指定"
 
-	return nil
+		}else{
+			if *menu.Is_important_asset{
+				Is_important_asset = "是"
+			}else {
+				Is_important_asset = "否"
+			}
+		}
+		if reflect.ValueOf(menu.Is_test_environment).IsNil(){
+			Is_test_environment = "未指定"
+
+		}else{
+			if *menu.Is_important_asset{
+				Is_test_environment = "是"
+			}else{
+				Is_test_environment = "否"
+			}
+		}
+		axis := fmt.Sprintf("A%d", i+2)
+		excel.SetSheetRow("Sheet1", axis, &[]interface{}{
+			i+1,
+			menu.Asset_system_name,
+			menu.Asset_system_manager,
+			menu.Asset_system_domain,
+			Is_important_asset, //tinyint得用指针
+			menu.Extranet_ip,
+			menu.Extranet_port,
+			menu.Intranet_ip,
+			menu.Intranet_port,
+			Is_test_environment,//tinyint得用指针
+			menu.Web_status_code,
+			menu.More_record,
+			menu.UpdatedAt,
+		})
+	}
+	err := excel.SaveAs(filePath)
+	return err
+
 }

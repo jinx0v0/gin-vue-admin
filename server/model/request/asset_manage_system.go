@@ -7,6 +7,6 @@ type Asset_manage_systemSearch struct{
     PageInfo
 }
 type Asset_manage_systemExport struct {
-    Infolist []model.Asset_manage_system
-    Filename string
+    Iterms []model.Asset_manage_system `json:"iterms"`
+    FileName string `json:"fileName"`
 }

@@ -128,16 +128,19 @@ func GetAsset_manage_systemList(c *gin.Context) {
         }, "获取成功", c)
     }
 }
-
-func ExportAsset_manage_system_resultsByIds(c *gin.Context){
-	print("exporting..")
+//导出指定id值
+func ExportAsset_manage_system_resultsByIds(c *gin.Context) {
+	//print("exporting..")
 	var asset_manage_systemExport request.Asset_manage_systemExport
 	_ = c.ShouldBindJSON(&asset_manage_systemExport)
-	//print(asset_manage_systemExport.Infolist[0])
-	if err := service.ExportAsset_manage_system_resultsByIds(asset_manage_systemExport); err != nil {
-		global.GVA_LOG.Error("选中导出失败!", zap.Any("err", err))
-		response.FailWithMessage("选中导出失败", c)
-	} else {
-		response.OkWithMessage("选中导出成功", c)
+	print(*asset_manage_systemExport.Iterms[0].Is_important_asset)
+	filePath := global.GVA_CONFIG.Excel.Dir + asset_manage_systemExport.FileName
+	err := service.ExportAsset_manage_system_resultsByIds(asset_manage_systemExport.Iterms, filePath)
+	if err != nil {
+		global.GVA_LOG.Error("转换Excel失败!", zap.Any("err", err))
+		response.FailWithMessage("转换Excel失败", c)
+		return
 	}
+	c.Writer.Header().Add("success", "true")
+	c.File(filePath)
 }
