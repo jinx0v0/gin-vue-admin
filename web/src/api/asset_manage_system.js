@@ -89,6 +89,7 @@ export const findAsset_manage_system = (params) => {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /asset_manage_system/getAsset_manage_systemList [get]
 export const getAsset_manage_systemList = (params) => {
+  // console.log(params)
   return service({
     url: '/asset_manage_system/getAsset_manage_systemList',
     method: 'get',
@@ -134,4 +135,20 @@ const handleFileError = (res, fileName) => {
     var event = new MouseEvent('click')
     a.dispatchEvent(event)
   }
+}
+
+
+export const exportAsset_manage_system_resultsByConditions = (params,fileName) => {
+  console.log(params)
+  service({
+    url: '/asset_manage_system/exportAsset_manage_system_resultsByConditions',
+    method: 'post',
+    data: {
+      params,
+      fileName: fileName
+    },
+    responseType: 'blob'
+  }).then((res) => {
+    handleFileError(res, fileName)
+  })
 }

@@ -61,6 +61,13 @@
         <el-form-item label="备注">
           <el-input placeholder="搜索条件" v-model="searchInfo.more_record" />
         </el-form-item>
+        <el-form-item label="url链接">
+          <el-input placeholder="搜索条件" v-model="searchInfo.url" />
+        </el-form-item>    
+        <el-form-item label="web指纹信息">
+          <el-input placeholder="搜索条件" v-model="searchInfo.fingerprint" />
+        </el-form-item>    
+        
         <el-form-item>
           <el-button
             size="mini"
@@ -121,7 +128,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="日期" width="180">
         <template slot-scope="scope">{{
-          scope.row.CreatedAt | formatDate
+          scope.row.UpdatedAt | formatDate
         }}</template>
       </el-table-column>
       <el-table-column label="系统名称" prop="asset_system_name" width="120" />
@@ -151,6 +158,8 @@
           scope.row.is_important_asset | formatBoolean
         }}</template>
       </el-table-column>
+         <el-table-column label="url链接" prop="url" width="120" /> 
+      <el-table-column label="web指纹信息" prop="fingerprint" width="120" />
       <el-table-column label="备注" prop="more_record" width="120" />
       <el-table-column label="按钮组">
         <template slot-scope="scope">
@@ -271,6 +280,14 @@
             clearable
           ></el-switch>
         </el-form-item>
+        <el-form-item label="url链接:">
+      
+          <el-input v-model="formData.url" clearable placeholder="请输入" />
+      </el-form-item>
+        <el-form-item label="web指纹信息:">
+      
+          <el-input v-model="formData.fingerprint" clearable placeholder="请输入" />
+      </el-form-item>
         <el-form-item label="备注:">
           <el-input
             v-model="formData.more_record"
@@ -296,6 +313,7 @@ import {
   findAsset_manage_system,
   getAsset_manage_systemList,
   exportAsset_manage_system_resultsByIds,
+  exportAsset_manage_system_resultsByConditions
 } from "@/api/asset_manage_system"; //  此处请自行替换地址
 import { formatTimeToStr } from "@/utils/date";
 import infoList from "@/mixins/infoList";
@@ -324,6 +342,8 @@ export default {
         web_screenshot: "",
         is_important_asset: false,
         more_record: "",
+        url: '',
+        fingerprint: '',
       },
     };
   },
@@ -408,8 +428,9 @@ export default {
     exportResult() {
       const filename = 'ExportResult.xlsx';
       if (this.multipleSelection.length === 0) {
-        //导出筛选条件的所有结果
-        return;
+        console.log('导出所有结果中')
+        exportAsset_manage_system_resultsByConditions(this.searchInfo,filename);
+        
       } else {
         // console.log(this.tableData);
         //导出选中筛选条件的结果
@@ -450,6 +471,8 @@ export default {
         web_screenshot: "",
         is_important_asset: false,
         more_record: "",
+        url: '',
+        fingerprint: '',
       };
     },
     async deleteAsset_manage_system(row) {

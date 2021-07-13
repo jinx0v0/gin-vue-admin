@@ -20,6 +20,8 @@ type Asset_manage_system struct {
       Web_screenshot  string `json:"web_screenshot" form:"web_screenshot" gorm:"column:web_screenshot;comment:"`
       Is_important_asset  *bool `json:"is_important_asset" form:"is_important_asset" gorm:"column:is_important_asset;comment:"`
       More_record  string `json:"more_record" form:"more_record" gorm:"column:more_record;comment:"`
+      Url  string `json:"url" form:"url" gorm:"column:url;comment:;type:varchar;"`
+      Fingerprint  string `json:"fingerprint" form:"fingerprint" gorm:"column:fingerprint;comment:;type:varchar;"`
 }
 
 

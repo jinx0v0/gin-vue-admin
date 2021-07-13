@@ -48,6 +48,14 @@
       <el-form-item label="备注:">
     <el-input v-model="formData.more_record" clearable placeholder="请输入" />
     </el-form-item>
+    
+      <el-form-item label="url链接:">
+    <el-input v-model="formData.url" clearable placeholder="请输入" />
+    </el-form-item>
+    
+      <el-form-item label="web指纹信息:">
+    <el-input v-model="formData.fingerprint" clearable placeholder="请输入" />
+    </el-form-item>
     <el-form-item>
         <el-button size="mini" type="primary" @click="save">保存</el-button>
         <el-button size="mini" type="primary" @click="back">返回</el-button>
@@ -82,6 +90,8 @@ export default {
             web_screenshot: '',
             is_important_asset: false,
             more_record: '',
+            url: '',
+            fingerprint: '',
             
       }
     }
