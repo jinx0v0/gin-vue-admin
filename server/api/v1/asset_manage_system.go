@@ -2,12 +2,12 @@ package v1
 
 import (
 	"gin-vue-admin/global"
-    "gin-vue-admin/model"
-    "gin-vue-admin/model/request"
-    "gin-vue-admin/model/response"
-    "gin-vue-admin/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"gin-vue-admin/model"
+	"gin-vue-admin/model/request"
+	"gin-vue-admin/model/response"
+	"gin-vue-admin/service"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // @Tags Asset_manage_system
@@ -158,4 +158,34 @@ func ExportAsset_manage_system_resultsByConditions(c *gin.Context) {
 	}
 	c.Writer.Header().Add("success", "true")
 	c.File(filePath)
+}
+
+func Load_excel(c *gin.Context){
+	print("get!!!!!!!")
+	menus, err := service.ParseExcel2assetList()
+	if err != nil {
+		global.GVA_LOG.Error("加载数据失败!", zap.Any("err", err))
+		response.FailWithMessage("加载数据失败", c)
+		return
+	}
+	for _,menu := range menus{
+		service.CreateAsset_manage_system(menu)
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     menus,
+		Total:    int64(len(menus)),
+		Page:     1,
+		PageSize: 999,
+	}, "加载数据成功", c)
+}
+
+func ImportExcelFile(c *gin.Context) {
+	_, header, err := c.Request.FormFile("file")
+	if err != nil {
+		global.GVA_LOG.Error("接收文件失败!", zap.Any("err", err))
+		response.FailWithMessage("接收文件失败", c)
+		return
+	}
+	_ = c.SaveUploadedFile(header, global.GVA_CONFIG.Excel.Dir+"外部资产导入模板.xlsx")//文件名写死
+	response.OkWithMessage("导入成功", c)
 }

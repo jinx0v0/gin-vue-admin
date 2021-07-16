@@ -97,7 +97,7 @@ export const getAsset_manage_systemList = (params) => {
   })
 }
 
-export const exportAsset_manage_system_resultsByIds = (iterms,fileName) => {
+export const exportAsset_manage_system_resultsByIds = (iterms, fileName) => {
   service({
     url: '/asset_manage_system/exportAsset_manage_system_resultsByIds',
     method: 'post',
@@ -116,7 +116,7 @@ const handleFileError = (res, fileName) => {
   if (typeof (res.data) !== 'undefined') {
     if (res.data.type === 'application/json') {
       const reader = new FileReader()
-      reader.onload = function() {
+      reader.onload = function () {
         const message = JSON.parse(reader.result).msg
         Message({
           showClose: true,
@@ -138,8 +138,8 @@ const handleFileError = (res, fileName) => {
 }
 
 
-export const exportAsset_manage_system_resultsByConditions = (params,fileName) => {
-  console.log(params)
+export const exportAsset_manage_system_resultsByConditions = (params, fileName) => {
+  // console.log(params)
   service({
     url: '/asset_manage_system/exportAsset_manage_system_resultsByConditions',
     method: 'post',
@@ -150,5 +150,12 @@ export const exportAsset_manage_system_resultsByConditions = (params,fileName) =
     responseType: 'blob'
   }).then((res) => {
     handleFileError(res, fileName)
+  })
+}
+
+export const loadExcelData = () => {
+  return service({
+    url: '/asset_manage_system/load_excel',
+    method: 'get'
   })
 }

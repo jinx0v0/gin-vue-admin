@@ -7,6 +7,7 @@
         :headers="{'x-token':token}"
         :on-success="loadExcel"
         :show-file-list="false"
+        
       >
         <el-button size="small" type="primary" icon="el-icon-upload2">导入</el-button>
       </el-upload>

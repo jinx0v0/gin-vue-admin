@@ -15,3 +15,8 @@ type Asset_manage_systemExport_Conditions struct {
     Params model.Asset_manage_system `json:"params"`
     FileName string `json:"fileName"`
 }
+
+type Asset_manage_systemImport_Excel struct {
+    Params model.Asset_manage_system `json:"params"`
+
+}

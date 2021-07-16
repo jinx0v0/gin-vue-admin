@@ -3,7 +3,7 @@
  */
 
 const config = {
-  appName: 'Gin-Vue-Admin',
+  appName: '外部资产管理平台',//Gin-Vue-Admin
   appLogo: 'https://www.gin-vue-admin.com/img/logo.png'
 }
 

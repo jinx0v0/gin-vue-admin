@@ -52,7 +52,7 @@ func ImportExcel(c *gin.Context) {
 		response.FailWithMessage("接收文件失败", c)
 		return
 	}
-	_ = c.SaveUploadedFile(header, global.GVA_CONFIG.Excel.Dir+"ExcelImport.xlsx")
+	_ = c.SaveUploadedFile(header, global.GVA_CONFIG.Excel.Dir+"ExcelImport.xlsx")//文件名写死
 	response.OkWithMessage("导入成功", c)
 }
 

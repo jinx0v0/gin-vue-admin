@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  title: 'GIN-VUE-ADMIN',
+  title: 'GIN-VUE-ADMIN',//
   baseCdnUrl: '//cdn.staticfile.org',
   cdns: [
     /**

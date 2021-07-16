@@ -63,11 +63,11 @@
         </el-form-item>
         <el-form-item label="url链接">
           <el-input placeholder="搜索条件" v-model="searchInfo.url" />
-        </el-form-item>    
+        </el-form-item>
         <el-form-item label="web指纹信息">
           <el-input placeholder="搜索条件" v-model="searchInfo.fingerprint" />
-        </el-form-item>    
-        
+        </el-form-item>
+
         <el-form-item>
           <el-button
             size="mini"
@@ -114,6 +114,22 @@
             {{ export_button_name }}
           </el-button>
         </el-form-item>
+        <el-form-item label="" prop="export">
+          <el-upload
+            type="success"
+            class="excel-btn"
+            :action="`${path}/asset_manage_system/import_excel`"
+            size="mini"
+            :on-success="loadExcel"
+            :headers="{ 'x-token': token }"
+            :show-file-list="false"
+            
+          >
+            <el-button size="small" type="primary" icon="el-icon-upload2"
+              >导入</el-button
+            >
+          </el-upload>
+        </el-form-item>
       </el-form>
     </div>
     <el-table
@@ -137,30 +153,30 @@
         prop="asset_system_manager"
         width="120"
       />
-      <el-table-column label="域名" prop="asset_system_domain" width="120" />
-      <el-table-column label="外网ip" prop="extranet_ip" width="120" />
-      <el-table-column label="外网端口" prop="extranet_port" width="120" />
-      <el-table-column label="内网ip" prop="intranet_ip" width="120" />
-      <el-table-column label="内网端口" prop="intranet_port" width="120" />
+      <el-table-column label="域名" prop="asset_system_domain" width="180" />
+      <el-table-column label="外网ip" prop="extranet_ip" width="150" />
+      <el-table-column label="外网端口" prop="extranet_port" width="100" />
+      <el-table-column label="内网ip" prop="intranet_ip" width="100" />
+      <el-table-column label="内网端口" prop="intranet_port" width="100" />
       <el-table-column
         label="归属测试环境"
         prop="is_test_environment"
-        width="120"
+        width="50"
       >
         <template slot-scope="scope">{{
           scope.row.is_test_environment | formatBoolean
         }}</template>
       </el-table-column>
-      <el-table-column label="web状态码" prop="web_status_code" width="120" />
+      <el-table-column label="web状态码" prop="web_status_code" width="80" />
       <el-table-column label="web截图" prop="web_screenshot" width="120" />
-      <el-table-column label="重点资产" prop="is_important_asset" width="120">
+      <el-table-column label="重点资产" prop="is_important_asset" width="80">
         <template slot-scope="scope">{{
           scope.row.is_important_asset | formatBoolean
         }}</template>
       </el-table-column>
-         <el-table-column label="url链接" prop="url" width="120" /> 
+      <el-table-column label="url链接" prop="url" width="120" />
       <el-table-column label="web指纹信息" prop="fingerprint" width="120" />
-      <el-table-column label="备注" prop="more_record" width="120" />
+      <el-table-column label="备注" prop="more_record" width="150" />
       <el-table-column label="按钮组">
         <template slot-scope="scope">
           <el-button
@@ -281,13 +297,15 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="url链接:">
-      
           <el-input v-model="formData.url" clearable placeholder="请输入" />
-      </el-form-item>
+        </el-form-item>
         <el-form-item label="web指纹信息:">
-      
-          <el-input v-model="formData.fingerprint" clearable placeholder="请输入" />
-      </el-form-item>
+          <el-input
+            v-model="formData.fingerprint"
+            clearable
+            placeholder="请输入"
+          />
+        </el-form-item>
         <el-form-item label="备注:">
           <el-input
             v-model="formData.more_record"
@@ -305,6 +323,7 @@
 </template>
 
 <script>
+const path = process.env.VUE_APP_BASE_API;
 import {
   createAsset_manage_system,
   deleteAsset_manage_system,
@@ -313,13 +332,18 @@ import {
   findAsset_manage_system,
   getAsset_manage_systemList,
   exportAsset_manage_system_resultsByIds,
-  exportAsset_manage_system_resultsByConditions
+  exportAsset_manage_system_resultsByConditions,
+  loadExcelData,
 } from "@/api/asset_manage_system"; //  此处请自行替换地址
 import { formatTimeToStr } from "@/utils/date";
 import infoList from "@/mixins/infoList";
+import { mapGetters } from "vuex";
 export default {
   name: "Asset_manage_system",
   mixins: [infoList],
+  computed: {
+    ...mapGetters("user", ["userInfo", "token"]),
+  },
   data() {
     return {
       listApi: getAsset_manage_systemList,
@@ -328,7 +352,7 @@ export default {
       deleteVisible: false,
       multipleSelection: [],
       export_button_name: "导出所有筛选结果",
-
+      path: path,
       formData: {
         asset_system_name: "",
         asset_system_manager: "",
@@ -342,8 +366,8 @@ export default {
         web_screenshot: "",
         is_important_asset: false,
         more_record: "",
-        url: '',
-        fingerprint: '',
+        url: "",
+        fingerprint: "",
       },
     };
   },
@@ -424,13 +448,18 @@ export default {
         this.getTableData();
       }
     },
-
+    loadExcel() {
+      this.listApi = loadExcelData
+      this.getTableData()
+    },
     exportResult() {
-      const filename = 'ExportResult.xlsx';
+      const filename = "ExportResult.xlsx";
       if (this.multipleSelection.length === 0) {
-        console.log('导出所有结果中')
-        exportAsset_manage_system_resultsByConditions(this.searchInfo,filename);
-        
+        console.log("导出所有结果中");
+        exportAsset_manage_system_resultsByConditions(
+          this.searchInfo,
+          filename
+        );
       } else {
         // console.log(this.tableData);
         //导出选中筛选条件的结果
@@ -441,7 +470,7 @@ export default {
             iterms.push(item);
           });
 
-        exportAsset_manage_system_resultsByIds(iterms,filename);
+        exportAsset_manage_system_resultsByIds(iterms, filename);
         // console.log(iterms)
         // if (res.code === 0) {
         //   alert("导出成功");
@@ -471,8 +500,8 @@ export default {
         web_screenshot: "",
         is_important_asset: false,
         more_record: "",
-        url: '',
-        fingerprint: '',
+        url: "",
+        fingerprint: "",
       };
     },
     async deleteAsset_manage_system(row) {
