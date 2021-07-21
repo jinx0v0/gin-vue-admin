@@ -86,7 +86,7 @@ func GetAsset_manage_systemInfoList(info request.Asset_manage_systemSearch) (err
 		db = db.Where("`asset_system_manager` = ?", info.Asset_system_manager)
 	}
 	if info.Asset_system_domain != "" {
-		db = db.Where("`asset_system_domain` = ?", info.Asset_system_domain)
+		db = db.Where("`asset_system_domain` LIKE ?","%"+ info.Asset_system_domain+"%")
 	}
 	if info.Extranet_ip != "" {
 		db = db.Where("`extranet_ip` LIKE ?", "%"+info.Extranet_ip+"%")
@@ -183,12 +183,14 @@ func ExportAsset_manage_system_resultsByConditions(info model.Asset_manage_syste
 	var asset_manage_systems []model.Asset_manage_system
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Asset_system_name != "" {
+
 		db = db.Where("`asset_system_name` LIKE ?", "%"+info.Asset_system_name+"%")
 	}
 	if info.Asset_system_manager != "" {
 		db = db.Where("`asset_system_manager` = ?", info.Asset_system_manager)
 	}
 	if info.Asset_system_domain != "" {
+		print("domain key:"+info.Asset_system_domain)
 		db = db.Where("`asset_system_domain` LIKE ?", "%"+info.Asset_system_domain+"%")
 	}
 	if info.Extranet_ip != "" {
@@ -273,6 +275,7 @@ func ExportAsset_manage_system_resultsByConditions(info model.Asset_manage_syste
 }
 
 func ParseExcel2assetList() ([]model.Asset_manage_system, error) {
+
 	is_test_environment := false
 	skipHeader := true
 	fixedHeader := []string{"系统名称", "产品经理（产品线-负责人）", "域名", "外网ip", "外网ip端口", "内网ip","内网ip端口","url","是否测试环境（是/否）","备注"}
@@ -286,7 +289,10 @@ func ParseExcel2assetList() ([]model.Asset_manage_system, error) {
 		return nil, err
 	}
 	for rows.Next() {
+
+		var menu model.Asset_manage_system
 		row, err := rows.Columns()
+		print(len(row)) //test
 		if err != nil {
 			return nil, err
 		}
@@ -298,16 +304,50 @@ func ParseExcel2assetList() ([]model.Asset_manage_system, error) {
 				return nil, errors.New("Excel格式错误")
 			}
 		}
-		if len(row) != len(fixedHeader) {
+		//if len(row) != len(fixedHeader) {
+		//	continue
+		//}
+		if len(row) < len(fixedHeader) {
+			for i:=1;i<11;i++{
+				row = append(row,"")
+			}
+		}
+		if len(row) < len(fixedHeader) {
 			continue
 		}
-		//id, _ := strconv.Atoi(row[0])
 		if row[8] == "是"{
+
 			is_test_environment = true
+			menu = model.Asset_manage_system{
+				//GVA_MODEL.CreatedAt
+				Asset_system_name:      row[0],
+				Asset_system_manager:      row[1],
+				Asset_system_domain:    row[2],
+				Extranet_ip:  row[3],
+				Extranet_port:      row[4],
+				Intranet_ip: row[5],
+				Intranet_port: row[6],
+				Url: row[7],
+				Is_test_environment: &is_test_environment,
+				More_record: row[9],
+			}
 		}else if row[8] == "否"{
 			is_test_environment = false
-		} // 未处理为空的情况
-		menu := model.Asset_manage_system{
+			menu = model.Asset_manage_system{
+				//GVA_MODEL.CreatedAt
+				Asset_system_name:      row[0],
+				Asset_system_manager:      row[1],
+				Asset_system_domain:    row[2],
+				Extranet_ip:  row[3],
+				Extranet_port:      row[4],
+				Intranet_ip: row[5],
+				Intranet_port: row[6],
+				Url: row[7],
+				Is_test_environment: &is_test_environment,
+				More_record: row[9],
+			}
+		}else {
+			menu = model.Asset_manage_system{
 			//GVA_MODEL.CreatedAt
 			Asset_system_name:      row[0],
 			Asset_system_manager:      row[1],
@@ -317,17 +357,15 @@ func ParseExcel2assetList() ([]model.Asset_manage_system, error) {
 			Intranet_ip: row[5],
 			Intranet_port: row[6],
 			Url: row[7],
-			Is_test_environment: &is_test_environment,
 			More_record: row[9],
-		}
+		}}
 		menus = append(menus, menu)
-
-
 	}
-	print("录入excel结果：")
-	for i,_ := range menus{
-		print("\n      "+menus[i].GVA_MODEL.CreatedAt.String())
-	}
+	//print("test import..")
+	//for i,menu := range menus{
+	//	print(i)
+	//	print(menu.Asset_system_name)
+	//}
 	return menus, nil
 }
 

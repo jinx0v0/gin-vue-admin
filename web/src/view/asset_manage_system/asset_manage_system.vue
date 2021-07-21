@@ -448,8 +448,17 @@ export default {
         this.getTableData();
       }
     },
-    loadExcel() {
-      this.listApi = loadExcelData
+    async loadExcel() {
+      // console.log('导入中1')
+      const res = await loadExcelData();
+      // console.log(res.code)
+      if (res.code === 0) {
+        this.$message({
+          type: "success",
+          message: "导入成功",
+        });
+        // alert('导入成功')
+      }
       this.getTableData()
     },
     exportResult() {

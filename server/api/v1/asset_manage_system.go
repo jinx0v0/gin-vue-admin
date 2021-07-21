@@ -171,15 +171,17 @@ func Load_excel(c *gin.Context){
 	for _,menu := range menus{
 		service.CreateAsset_manage_system(menu)
 	}
-	response.OkWithDetailed(response.PageResult{
-		List:     menus,
-		Total:    int64(len(menus)),
-		Page:     1,
-		PageSize: 999,
-	}, "加载数据成功", c)
+	//response.OkWithDetailed(response.PageResult{
+	//	List:     menus,
+	//	Total:    int64(len(menus)),
+	//	Page:     1,
+	//	PageSize: 999,
+	//}, "加载数据成功", c)
+	response.OkWithMessage("导入数据库成功", c)
 }
 
 func ImportExcelFile(c *gin.Context) {
+	//print("importing...")
 	_, header, err := c.Request.FormFile("file")
 	if err != nil {
 		global.GVA_LOG.Error("接收文件失败!", zap.Any("err", err))
